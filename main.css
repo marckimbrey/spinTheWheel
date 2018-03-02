@@ -1,0 +1,15 @@
+* {
+  text-align: center;
+}
+
+header {
+  background: blue;
+}
+
+
+#wheel-canvas {
+  border-radius:50%;
+  margin: 10px;
+  background: red;
+  transition: all 5s ease-in-out;
+}
