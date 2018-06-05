@@ -1,18 +1,19 @@
-let data = [
-  {name: 'fred', color:'grey'},
-  {name: 'joe', color:'black'},
-  {name: 'bob', color:'yellow'},
-  {name: 'sam', color:'pink'},
-  {name: 'jackie', color: 'red'},
-  {name: 'bob', color: 'blue'}
-];
-var slices   = data.length;
-var sliceDeg = 360/slices;
-var deg      = 0;
-var canvas = document.getElementById('wheel-canvas');
-var ctx = canvas.getContext('2d');
-var width  = canvas.width; // size
-var center = width/2;      // center
+
+// retrieve data from localStorage
+let localData = JSON.parse(localStorage.getItem("chartData"));
+
+// chart variables
+let slices   = localData.length;
+let sliceDeg = 360/slices;
+let deg      = 0;
+const canvas = document.getElementById('wheel-canvas');
+const ctx = canvas.getContext('2d');
+let width  = canvas.width; // size
+let center = width/2;      // center
+
+
+
+
 function deg2rad(deg){ return deg * Math.PI/180; }
 
 function drawSlice(deg, color){
@@ -25,14 +26,31 @@ function drawSlice(deg, color){
   ctx.fill();
 
 }
-
+// draw pie chart
 for(var i=0; i<slices; i++){
-  drawSlice(deg, data[i].color);
+  drawSlice(deg, localData[i].color);
   deg += sliceDeg;
 }
+// load form with existing data
+loadSliceInputs(localData)
 
 function spinWheel(spinLength) {
 
   canvas.style.transform   = 'rotate('+spinLength+'deg)';
   return spinLength;
+}
+
+// handle slice input data
+function loadSliceInputs(data) {
+
+  data.forEach((slice) => {
+    let newSlice = document.createElement("div");
+    newSlice.innerHTML = `
+                <label>Option</label>
+                <input type="text" name="name" value="${slice.name}">
+                <label>color</label>
+                <input type="color" name="color" value="${slice.color}">
+              `;
+      document.getElementsByClassName('wheel-data')[0].appendChild(newSlice)
+  })
 }
