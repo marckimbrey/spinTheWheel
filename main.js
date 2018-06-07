@@ -1,6 +1,10 @@
 
 // retrieve data from localStorage
 let localData = JSON.parse(localStorage.getItem("chartData"));
+// localData = localData.map((x) => {
+//   console.log(x)
+//   return JSON.parse(x)
+// })
 
 // chart variables
 let slices   = localData.length;
@@ -10,8 +14,6 @@ const canvas = document.getElementById('wheel-canvas');
 const ctx = canvas.getContext('2d');
 let width  = canvas.width; // size
 let center = width/2;      // center
-
-
 
 
 function deg2rad(deg){ return deg * Math.PI/180; }
@@ -40,28 +42,35 @@ function spinWheel(spinLength) {
   return spinLength;
 }
 
+function newInputRow(name, color) {
+  let newRow = document.createElement("div");
+  newRow.classList.add("row-input");
+  newRow.innerHTML = `
+              <label>Option</label>
+              <input type="text" name="name" value="${name || ""}">
+              <label>color</label>
+              <input type="color" name="color" value="${color || ""}">
+              <button
+                class="delete-slice-btn btn"
+                type="button"
+                name="deleteSlice"
+                >X</button>
+            `;
+  return newRow;
+}
 // handle slice input data
 function loadSliceInputs(data) {
-
+  console.log('data',data)
+  if(!data) return;
   data.forEach((slice, i) => {
-    let newSlice = document.createElement("div");
-    newSlice.innerHTML = `
-                <label>Option</label>
-                <input type="text" name="name" value="${slice.name}">
-                <label>color</label>
-                <input type="color" name="color" value="${slice.color}">
-                <button
-                  class="delete-slice-btn btn"
-                  type="button"
-                  name="deleteSlice"
-                  >X</button>
-              `;
-      if (i >= data.length -1) {
-        newSlice.innerHTML += `
-          <button class="add-slice-btn btn" type="button" name="addSlice">
-          +</button>`;
-      };
-      document.getElementsByClassName('wheel-data-inputs')[0].appendChild(newSlice)
+    let newSlice = newInputRow(slice.name, slice.color);
+    // if last row add addrow button
+    if (i >= data.length -1) {
+      newSlice.innerHTML += `
+        <button class="add-slice-btn btn" type="button" name="addSlice">
+        +</button>`;
+    };
+    document.getElementsByClassName('wheel-data-inputs')[0].appendChild(newSlice)
   })
 }
 
@@ -71,18 +80,20 @@ function loadSliceInputs(data) {
 
  const deleteBtns = document.getElementsByClassName("delete-slice-btn");
  const addSlice = document.getElementsByClassName("add-slice-btn")[0];
+ const submitBtn = document.getElementsByClassName("wheel-data-submit")[0];
+
 
 // delete input row
 function deleteSlice() {
   // if last row
   if (!this.parentNode.nextSibling) {
-    this.parentNode.previousSibling.innerHTML += `
-      <button
-        class="add-slice-btn btn"
-        type="button"
-        name="addSlice">
-      +</button>`;
-    this.parentNode.previousSibling.lastChild.addEventListener('click', addRow);
+    addRowBtn = document.createElement('button')
+    addRowBtn.class = "add-slice-btn btn";
+    addRowBtn.type = "button";
+    addRowBtn.name = "addSlice";
+    addRowBtn.innerHTML = "+";
+    addRowBtn.addEventListener('click', addRow);
+    this.parentNode.previousSibling.appendChild(addRowBtn)
   }
   this.parentNode.parentNode.removeChild(this.parentNode)
 }
@@ -90,17 +101,8 @@ function deleteSlice() {
 function addRow() {
   console.log(this)
   this.parentNode.removeChild(this);
-  let newSlice = document.createElement("div");
-  newSlice.innerHTML = `
-              <label>Option</label>
-              <input type="text" name="name" value="">
-              <label>color</label>
-              <input type="color" name="color" value="">
-              <button
-                class="delete-slice-btn btn"
-                type="button"
-                name="deleteSlice"
-                >X</button>
+  let newSlice = newInputRow();
+  newSlice.innerHTML += `
               <button class="add-slice-btn btn" type="button" name="addSlice">
               +</button>
             `;
@@ -116,9 +118,25 @@ function addRow() {
   document.getElementsByClassName('wheel-data-inputs')[0].appendChild(newSlice)
 }
 
+function handleFormSubmit(e) {
+  //prevent form submit and page reload
+  e.preventDefault();
+  let data = [];
+
+  // iterate over form rows for data
+  const rows = document.getElementsByClassName('row-input');
+  Array.prototype.forEach.call(rows, function(row, i) {
+    let name = row.querySelector('input[name="name"]').value;
+    let color = row.querySelector('input[name="color"]').value;
+    data.push({name: name, color: color})
+  });
+  localStorage.setItem("chartData", JSON.stringify(data));
+}
+
 
 Array.prototype.forEach.call(deleteBtns, function(btn) {
   btn.addEventListener("click", deleteSlice)
 });
 
 addSlice.addEventListener("click", addRow)
+submitBtn.addEventListener("click", handleFormSubmit)
