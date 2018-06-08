@@ -52,7 +52,6 @@ function newInputRow(name, color) {
 }
 // handle slice input data
 function loadSliceInputs(data) {
-  console.log('data',data)
   if(!data) return;
   data.forEach((slice, i) => {
     let newSlice = newInputRow(slice.name, slice.color);
@@ -128,16 +127,34 @@ function handleFormSubmit(e) {
   });
   // update localStorage
   localStorage.setItem("chartData", JSON.stringify(data));
-    // reload app
-    loadPieChart(data);
+  // update global data
+  localData = data;
+  // reload wheel
+  loadPieChart(data);
 
 
 }
 
 function spinWheel() {
-  const spinLength = Math.random() * 10000
+  //spinn wheel
+  const spinLength = Math.random() * 10000;
   canvas.style.transform   = 'rotate('+spinLength+'deg)';
-  return spinLength;
+  // get pie chart data
+  let curDeg = 0;
+  const dataDeg = localData.map(sec => {
+    sec.lowerDeg = curDeg;
+    sec.higherDeg = curDeg + (360 / localData.length) -1 ;
+    curDeg = curDeg + (360 / localData.length);
+    return sec;
+  })
+  // calculate remainder
+  let remainder = spinLength % 360;
+  // find winner
+  winner = dataDeg.filter(sec => {
+    return (sec.lowerDeg <= remainder && sec.higherDeg >= remainder);
+  })
+  console.log('winner', winner);
+  return winner;
 }
 
 
