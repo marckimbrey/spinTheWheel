@@ -1,15 +1,11 @@
 
 // retrieve data from localStorage
 let localData = JSON.parse(localStorage.getItem("chartData"));
-// localData = localData.map((x) => {
-//   console.log(x)
-//   return JSON.parse(x)
-// })
 
 // chart variables
-let slices   = localData.length;
-let sliceDeg = 360/slices;
-let deg      = 0;
+// let slices   = localData.length;
+// let sliceDeg = 360/slices;
+//let deg      = 0;
 const canvas = document.getElementById('wheel-canvas');
 const ctx = canvas.getContext('2d');
 let width  = canvas.width; // size
@@ -18,8 +14,7 @@ let center = width/2;      // center
 
 function deg2rad(deg){ return deg * Math.PI/180; }
 
-function drawSlice(deg, color){
-  console.log(deg)
+function drawSlice(deg, color, sliceDeg){
   ctx.beginPath();
   ctx.fillStyle = color;
   ctx.moveTo(center, center);
@@ -28,18 +23,15 @@ function drawSlice(deg, color){
   ctx.fill();
 
 }
-// draw pie chart
-for(var i=0; i<slices; i++){
-  drawSlice(deg, localData[i].color);
-  deg += sliceDeg;
-}
-// load form with existing data
-loadSliceInputs(localData)
-
-function spinWheel(spinLength) {
-
-  canvas.style.transform   = 'rotate('+spinLength+'deg)';
-  return spinLength;
+function loadPieChart(data) {
+  let deg= 0;
+  let slices   = data.length;
+  let sliceDeg = 360/slices;
+  // draw pie chart
+  for(var i=0; i<data.length; i++){
+    drawSlice(deg, data[i].color, sliceDeg);
+    deg += sliceDeg;
+  }
 }
 
 function newInputRow(name, color) {
@@ -73,14 +65,18 @@ function loadSliceInputs(data) {
     document.getElementsByClassName('wheel-data-inputs')[0].appendChild(newSlice)
   })
 }
+// load app
+loadPieChart(localData);
+loadSliceInputs(localData)
 
 /***
- FORM EVENT HANDLERS
+EVENT HANDLERS
  ***/
 
  const deleteBtns = document.getElementsByClassName("delete-slice-btn");
  const addSlice = document.getElementsByClassName("add-slice-btn")[0];
  const submitBtn = document.getElementsByClassName("wheel-data-submit")[0];
+ const spinWheelBtn = document.getElementsByClassName("spin-wheel-btn")[0];
 
 
 // delete input row
@@ -130,7 +126,18 @@ function handleFormSubmit(e) {
     let color = row.querySelector('input[name="color"]').value;
     data.push({name: name, color: color})
   });
+  // update localStorage
   localStorage.setItem("chartData", JSON.stringify(data));
+    // reload app
+    loadPieChart(data);
+
+
+}
+
+function spinWheel() {
+  const spinLength = Math.random() * 10000
+  canvas.style.transform   = 'rotate('+spinLength+'deg)';
+  return spinLength;
 }
 
 
@@ -140,3 +147,4 @@ Array.prototype.forEach.call(deleteBtns, function(btn) {
 
 addSlice.addEventListener("click", addRow)
 submitBtn.addEventListener("click", handleFormSubmit)
+spinWheelBtn.addEventListener("click", spinWheel)
