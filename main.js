@@ -71,18 +71,17 @@ function loadSliceInputs(data) {
 }
 
 function displayWinner(winner) {
-  // circle animation to fill chart
-  let deg = winner.higherDeg
-  let fullCircle = deg + 360;
-    for(deg ; deg< fullCircle; deg+ 10) {
-      setTimeout(() => {
-        drawSlice(deg, winner.color, 10);
-        deg+= 10;
-        console.log(deg)
-      }, 300)
-    }
+  const rotatedAng =  winner.higherDeg -winner.lowerDeg;
+
+  //  animation to fill chart
+  drawSlice(winner.lowerDeg, winner.color, 360);
   // display name of winner
+  setTimeout(function() {
+    document.getElementsByClassName("winner-name")[0].innerHTML = winner.name
+  }, 400)
+
 }
+
 // load app
 loadPieChart(localData);
 loadSliceInputs(localData)
@@ -166,8 +165,9 @@ function spinWheel() {
   winner = localData.filter(sec => {
     return (sec.lowerDeg + remainder  <= 360 && sec.higherDeg + remainder   >= 360);
   })
+
   console.log('winner', winner);
-  //setTimeout(() => {displayWinner(winner[0])}, 8000)
+  setTimeout(() => {displayWinner(winner[0])}, 5500)
 }
 
 
