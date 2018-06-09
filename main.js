@@ -24,12 +24,17 @@ function drawSlice(deg, color, sliceDeg){
 
 }
 function loadPieChart(data) {
+
   let deg= 0;
   let slices   = data.length;
   let sliceDeg = 360/slices;
   // draw pie chart
   for(var i=0; i<data.length; i++){
-    drawSlice(deg, data[i].color, sliceDeg);
+    // set lower and higher degs for segments
+      data[i].lowerDeg = deg;
+      data[i].higherDeg = deg + sliceDeg -1 ;
+
+    drawSlice(data[i].lowerDeg - sliceDeg, data[i].color, sliceDeg);
     deg += sliceDeg;
   }
 }
@@ -63,6 +68,20 @@ function loadSliceInputs(data) {
     };
     document.getElementsByClassName('wheel-data-inputs')[0].appendChild(newSlice)
   })
+}
+
+function displayWinner(winner) {
+  // circle animation to fill chart
+  let deg = winner.higherDeg
+  let fullCircle = deg + 360;
+    for(deg ; deg< fullCircle; deg+ 10) {
+      setTimeout(() => {
+        drawSlice(deg, winner.color, 10);
+        deg+= 10;
+        console.log(deg)
+      }, 300)
+    }
+  // display name of winner
 }
 // load app
 loadPieChart(localData);
@@ -136,25 +155,19 @@ function handleFormSubmit(e) {
 }
 
 function spinWheel() {
-  //spinn wheel
-  const spinLength = Math.random() * 10000;
+  //spin wheel
+  const spinLength = Math.random() * 1000;
   canvas.style.transform   = 'rotate('+spinLength+'deg)';
-  // get pie chart data
-  let curDeg = 0;
-  const dataDeg = localData.map(sec => {
-    sec.lowerDeg = curDeg;
-    sec.higherDeg = curDeg + (360 / localData.length) -1 ;
-    curDeg = curDeg + (360 / localData.length);
-    return sec;
-  })
+
   // calculate remainder
   let remainder = spinLength % 360;
+
   // find winner
-  winner = dataDeg.filter(sec => {
-    return (sec.lowerDeg <= remainder && sec.higherDeg >= remainder);
+  winner = localData.filter(sec => {
+    return (sec.lowerDeg + remainder  <= 360 && sec.higherDeg + remainder   >= 360);
   })
   console.log('winner', winner);
-  return winner;
+  //setTimeout(() => {displayWinner(winner[0])}, 8000)
 }
 
 
