@@ -71,7 +71,6 @@ function loadSliceInputs(data) {
 }
 
 function displayWinner(winner) {
-  const rotatedAng =  winner.higherDeg -winner.lowerDeg;
 
   //  animation to fill chart
   drawSlice(winner.lowerDeg, winner.color, 360);
@@ -84,16 +83,17 @@ function displayWinner(winner) {
 
 // load app
 loadPieChart(localData);
-loadSliceInputs(localData)
+loadSliceInputs(localData);
 
 /***
 EVENT HANDLERS
  ***/
 
- const deleteBtns = document.getElementsByClassName("delete-slice-btn");
- const addSlice = document.getElementsByClassName("add-slice-btn")[0];
- const submitBtn = document.getElementsByClassName("wheel-data-submit")[0];
- const spinWheelBtn = document.getElementsByClassName("spin-wheel-btn")[0];
+const deleteBtns = document.getElementsByClassName("delete-slice-btn");
+const addSlice = document.getElementsByClassName("add-slice-btn")[0];
+const submitBtn = document.getElementsByClassName("wheel-data-submit")[0];
+const spinWheelBtn = document.getElementsByClassName("spin-wheel-btn")[0];
+const resetWheelBtn = document.getElementsByClassName("reset-wheel-btn")[0];
 
 
 // delete input row
@@ -170,6 +170,11 @@ function spinWheel() {
   setTimeout(() => {displayWinner(winner[0])}, 5500)
 }
 
+function resetWheel() {
+  loadPieChart(localData);
+  document.getElementsByClassName("winner-name")[0].innerHTML = "";
+}
+
 
 Array.prototype.forEach.call(deleteBtns, function(btn) {
   btn.addEventListener("click", deleteSlice)
@@ -178,3 +183,4 @@ Array.prototype.forEach.call(deleteBtns, function(btn) {
 addSlice.addEventListener("click", addRow)
 submitBtn.addEventListener("click", handleFormSubmit)
 spinWheelBtn.addEventListener("click", spinWheel)
+resetWheelBtn.addEventListener("click", resetWheel)
