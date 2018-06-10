@@ -2,6 +2,15 @@
 // retrieve data from localStorage
 let localData = JSON.parse(localStorage.getItem("chartData"));
 
+if(!localData) { //load sample data
+  localData = [
+    {name: 'Tim', color: '#dd55cd'},
+    {name: 'Sam', color: '#04df4c'},
+    {name: 'John', color: '#ff2211'}
+
+  ]
+}
+
 // chart variables
 // let slices   = localData.length;
 // let sliceDeg = 360/slices;
