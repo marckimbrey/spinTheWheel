@@ -23,6 +23,7 @@ function drawSlice(deg, color, sliceDeg){
   ctx.fill();
 
 }
+
 function loadPieChart(data) {
 
   let deg= 0;

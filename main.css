@@ -1,21 +1,45 @@
 * {
   text-align: center;
+  font-size: 1.02em;
 }
 
-header {
-  background: blue;
+body {
+  background: #eee;
+}
+h1 {
+  font-size: 3.5em;
+}
+
+input, button{
+  margin-right: 5px;
+  border-radius: 10%;
 }
 
 .wheel-section {
   position: relative;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 #wheel-canvas {
   border-radius:50%;
   margin: 10px;
-  background: red;
+  background: #111;
   transition: all 5s ease-in-out;
 
+}
+
+.pointer {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 40px solid #111;
 }
 
 .winner-name {
@@ -24,5 +48,44 @@ header {
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 4em;
+  font-weight: bold;
   z-index: 2;
+}
+
+.wheel-data {
+  margin: 1.2em 0;
+}
+.row-input {
+  margin: 5px auto;
+}
+
+.delete-slice-btn, .reset-wheel-btn {
+  background-color: #d53;
+}
+
+.delete-slice-btn:hover, .reset-wheel-btn:hover {
+  background-color: #f00;
+}
+
+
+.wheel-data-submit {
+  margin-top: 10px;
+  background-color: #5bd;
+}
+
+.wheel-data-submit:hover {
+  background-color: #00f;
+}
+
+.spin-wheel-btn, .add-slice-btn {
+  background-color: #5d5;
+}
+
+.spin-wheel-btn:hover, .add-slice-btn:hover {
+  background-color: #0f0;
+}
+
+.spin-wheel-btn:hover, .wheel-data-submit:hover,
+.reset-wheel-btn:hover {
+  padding: 5px 10px;
 }
